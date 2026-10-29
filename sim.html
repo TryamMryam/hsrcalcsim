@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Симуляция боя — HSR Calc Sim</title>
   <link rel="stylesheet" href="styles.css">
+  <script src="battle.js" defer></script>
   <script src="sim.js" defer></script>
 </head>
 <body>
@@ -12,7 +13,14 @@
     <a class="back" href="index.html">← Главное меню</a>
     <p class="eyebrow">SIM</p>
     <h1>Симуляция боя</h1>
-    <p class="description">Одна атака в секунду. Каждый удар снимает 1 HP.</p>
+    <p class="description">AV = 10000 / SPD. Первый цикл — 150 AV, остальные — по 100 AV. Каждый удар снимает 1 HP.</p>
+    <form id="setup" class="setup">
+      <label>Белый круг · SPD<input id="white-spd" type="number" min="1" max="1000" step="any" value="100" required></label>
+      <label>Красный круг · SPD<input id="red-spd" type="number" min="1" max="1000" step="any" value="100" required></label>
+      <label>Количество циклов<input id="cycles" type="number" min="1" max="100" step="1" value="5" required></label>
+      <button class="button" type="submit">Начать бой / заново</button>
+    </form>
+    <p class="description">Настройки применяются при начале нового боя. При равном AV первым ходит белый круг. Ход на границе циклов относится к завершающемуся циклу.</p>
     <section class="arena" aria-label="Бой двух кругов">
       <div class="fighter" id="white">
         <div class="health" role="progressbar" aria-label="Здоровье белого круга" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
@@ -21,6 +29,7 @@
         </div>
         <div class="circle white"></div>
         <span class="fighter-name">Белый круг</span>
+        <p class="fighter-stats">SPD — · AV —</p>
       </div>
       <div class="fighter" id="red">
         <div class="health" role="progressbar" aria-label="Здоровье красного круга" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
@@ -29,10 +38,16 @@
         </div>
         <div class="circle red"></div>
         <span class="fighter-name">Красный круг</span>
+        <p class="fighter-stats">SPD — · AV —</p>
       </div>
     </section>
-    <p class="status" role="status">Бой начинается. Первым атакует белый круг.</p>
-    <button class="button" id="restart" type="button">Начать заново ↻</button>
+    <p class="status" role="status">Задайте SPD и начните бой.</p>
+    <button class="button" id="next" type="button" disabled>Следующий ход →</button>
+    <section aria-labelledby="turns-heading">
+      <h2 id="turns-heading">Список ходов</h2>
+      <p class="description">AV хода отсчитывается от начала боя. Порядок ходов продолжается между циклами.</p>
+      <div id="turns"></div>
+    </section>
   </main>
 </body>
 </html>
