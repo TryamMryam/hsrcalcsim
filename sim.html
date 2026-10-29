@@ -5,44 +5,84 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Симуляция боя — HSR Calc Sim</title>
   <link rel="stylesheet" href="styles.css">
+  <script src="characters.js" defer></script>
+  <script src="toughness.js" defer></script>
+  <script src="character-icon.js" defer></script>
+  <script src="monsters.js" defer></script>
+  <script src="monster-levels.js" defer></script>
+  <script src="monster-model.js" defer></script>
+  <script src="relics.js" defer></script>
+  <script src="relic-model.js" defer></script>
+  <script src="profile-model.js" defer></script>
+  <script src="character-details.js" defer></script>
   <script src="battle.js" defer></script>
+  <script src="damage.js" defer></script>
   <script src="sim.js" defer></script>
 </head>
-<body>
-  <main class="panel">
-    <a class="back" href="index.html">← Главное меню</a>
-    <p class="eyebrow">SIM</p>
+<body class="app-body">
+  <a class="skip-link" href="#main-content">К содержимому</a>
+  <aside class="app-sidebar" aria-label="Меню приложения">
+    <a class="sidebar-brand" href="index.html" aria-label="HSR Calc Sim — главная"><span class="brand-mark" aria-hidden="true">HSR</span><span class="sidebar-brand-text">CALC SIM</span></a>
+    <nav class="sidebar-nav" aria-label="Страницы">
+      <a class="sidebar-link" href="index.html" title="Главная"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10 12 3l9 7M5 9v12h14V9M9 21v-8h6v8"/></svg><span class="sidebar-label">Главная</span></a>
+      <a class="sidebar-link" href="profile.html" title="Профиль"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a8 8 0 0 0-16 0v2M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0"/></svg><span class="sidebar-label">Профиль</span></a>
+      <a class="sidebar-link" href="characters.html" title="Персонажи"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a6 6 0 0 0-12 0v2M14 6a4 4 0 1 1-8 0 4 4 0 0 1 8 0M18 3a4 4 0 0 1 0 8M20 15a6 6 0 0 1 2 4v2"/></svg><span class="sidebar-label">Персонажи</span></a>
+      <a class="sidebar-link" href="relics.html" title="Реликвии"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 9-9 9-9-9 9-9ZM3 12h18M12 3l4 9-4 9-4-9 4-9Z"/></svg><span class="sidebar-label">Реликвии</span></a>
+      <a class="sidebar-link" href="sim.html" title="Симуляция боя" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 3 17 17M14 3h7v7M21 3 3 21M3 14v7h7M3 3v5l5 5M16 16l5 5M14 21l7-7"/></svg><span class="sidebar-label">Симуляция боя</span></a>
+      <a class="sidebar-link" href="lightcones.html" title="Световые конусы"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18H6zM9 7h6M9 11h6M9 15h3"/></svg><span class="sidebar-label">Световые конусы</span></a>
+    </nav>
+  </aside>
+  <main id="main-content" tabindex="-1" class="panel sim-panel">
+    <p class="eyebrow">SIM · ОТРЯД</p>
     <h1>Симуляция боя</h1>
-    <p class="description">AV = 10000 / SPD. Первый цикл — 150 AV, остальные — по 100 AV. Каждый удар снимает 1 HP.</p>
+    <p class="description">Соберите отряд из 1–4 персонажей и выберите от 1 до 5 противников. AV = 10000 / SPD. Первый цикл — 150 AV, остальные — по 100 AV. Урон базовых атак персонажей рассчитывается по характеристикам и защите цели.</p>
     <form id="setup" class="setup">
-      <label>Белый круг · SPD<input id="white-spd" type="number" min="1" max="1000" step="any" value="100" required></label>
-      <label>Красный круг · SPD<input id="red-spd" type="number" min="1" max="1000" step="any" value="100" required></label>
+      <fieldset class="roster"><legend>Выбор персонажей · <span id="team-count">0/4</span></legend>
+        <p class="description">Уровень 80 · максимальное возвышение · без конуса и бонусов следов. В режиме «Профиль» учитываются основные и дополнительные характеристики экипированных реликвий. Данные: <a href="https://hsr.nanoka.cc/character" target="_blank" rel="noopener">Nanoka</a> · 4.6.54. Названия — на английском.</p>
+        <label>Источник персонажей<select id="character-source"><option value="profile">Профиль · с экипировкой</option><option value="all">Общий список · без экипировки</option></select></label>
+        <p id="character-source-description" class="description"></p>
+        <a class="back" href="profile.html">Настроить профиль и экипировку →</a>
+        <label>Поиск персонажа<input id="search" type="search" placeholder="Например, Kafka" autocomplete="off"></label>
+        <div id="selected-team" aria-label="Выбранный отряд"></div>
+        <div id="characters" class="character-grid"></div>
+      </fieldset>
+      <fieldset class="roster"><legend>Выбор противников · <span id="enemy-count">0/5</span></legend>
+        <p class="description">Уровень каждого выбранного противника настраивается отдельно (по умолчанию 80). В каталоге показаны характеристики 80-го уровня · основной вариант противника. HP, ATK, DEF и SPD учитывают коэффициенты уровня и варианта из <a href="https://hsr.nanoka.cc/monster" target="_blank" rel="noopener">Nanoka</a> · 4.6.54. Противники с SPD 0 не совершают самостоятельных ходов. Можно добавить несколько одинаковых противников. Удаление — кнопкой в выбранной группе.</p>
+        <label>Поиск противника<input id="monster-search" type="search" placeholder="Название или ID" autocomplete="off"></label>
+        <div id="selected-enemies" aria-label="Выбранные противники"></div>
+        <div id="monsters" class="character-grid"></div>
+      </fieldset>
       <label>Количество циклов<input id="cycles" type="number" min="1" max="100" step="1" value="5" required></label>
-      <button class="button" type="submit">Начать бой / заново</button>
+      <button class="button" id="start" type="submit" disabled>Начать бой / заново</button>
     </form>
-    <p class="description">Настройки применяются при начале нового боя. При равном AV первым ходит белый круг. Ход на границе циклов относится к завершающемуся циклу.</p>
-    <section class="arena" aria-label="Бой двух кругов">
-      <div class="fighter" id="white">
-        <div class="health" role="progressbar" aria-label="Здоровье белого круга" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
-          <div class="health-fill"></div>
-          <span class="health-value">100/100</span>
-        </div>
-        <div class="circle white"></div>
-        <span class="fighter-name">Белый круг</span>
-        <p class="fighter-stats">SPD — · AV —</p>
-      </div>
-      <div class="fighter" id="red">
-        <div class="health" role="progressbar" aria-label="Здоровье красного круга" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
-          <div class="health-fill"></div>
-          <span class="health-value">100/100</span>
-        </div>
-        <div class="circle red"></div>
-        <span class="fighter-name">Красный круг</span>
-        <p class="fighter-stats">SPD — · AV —</p>
-      </div>
+    <p class="description">Изменения составов применяются в новом бою. При равном AV сначала ходят персонажи, затем противники, в порядке выбора. Каждый участник атакует первую живую цель противоположной команды. Ход на границе циклов относится к завершающемуся циклу.</p>
+    <section class="arena" aria-label="Бой отряда с противниками" hidden>
+      <div id="allies" class="allies"></div><div id="enemies" class="enemies"></div>
     </section>
-    <p class="status" role="status">Задайте SPD и начните бой.</p>
-    <button class="button" id="next" type="button" disabled>Следующий ход →</button>
+    <p class="status" role="status">Выберите от 1 до 4 персонажей и от 1 до 5 противников, затем начните бой.</p>
+    <section id="battle-actions" hidden aria-label="Действия в бою">
+      <p id="action-prompt" class="description" role="status"></p>
+      <p id="damage-preview" class="description" aria-live="polite"></p>
+      <p id="toughness-preview" class="description" aria-live="polite"></p>
+      <div class="attack-actions" role="group" aria-label="Атаки персонажа">
+        <button class="button" id="basic-attack" type="button" disabled>Базовая атака</button>
+        <button class="button" id="skill" type="button" disabled title="Пока недоступно">Способность</button>
+        <button class="button" id="ultimate" type="button" disabled title="Пока недоступно">Сверхспособность</button>
+      </div>
+      <p class="description">Базовая атака: урон по формуле с учётом экипировки, критов и защиты цели; снижение стойкости при совпадении стихии с уязвимостью. Способность и сверхспособность пока недоступны.</p>
+      <details class="toughness-formula"><summary>Расчёт урона HP</summary>
+        <p class="description">База = характеристика (ATK, HP или DEF) × коэффициент базовой атаки 6-го уровня + добавочный урон.</p>
+        <p class="description">Урон = база × исходный множитель × крит × бонус урона × ослабление × защита × сопротивление × уязвимость × снижение входящего урона × состояние стойкости.</p>
+        <p class="description">Защита = (200 + 10 × уровень атакующего) / (эффективная DEF цели + 200 + 10 × уровень атакующего). Сопротивление = 1 − (RES − пробивание RES). Крит = 1 + крит. урон при успешном броске. При непустой стойкости цели действует множитель 0,9; после пробития — 1.</p>
+        <p class="description">Формула: <a href="https://honkai-star-rail.fandom.com/wiki/Damage" target="_blank" rel="noopener">HSR Wiki · Damage</a>. Проценты и характеристики реликвий учитываются из профиля. Многоударные атаки пока считаются суммарно с одним броском крита на цель. Урон пробития, урон Радости и дополнительные эффекты навыков не подключены; атаки противников пока снимают 1 HP.</p>
+      </details>
+      <details class="toughness-formula"><summary>Расчёт снижения стойкости</summary>
+        <p class="description">(Базовое снижение + добавка) × (1 + бонус снижения) × (1 + эффективность пробития + уязвимость к стойкости) × множитель способности.</p>
+        <p class="description">SPD берётся из итоговых характеристик персонажа с округлением дробной части от 0,6 вверх и определяет частоту ходов. Скорость, ATK и эффект пробития не увеличивают снижение стойкости за удар. Эффективность пробития учитывается отдельно. Сам урон стойкости не округляется по правилу скорости.</p>
+        <p class="description">Без бонусов обычная базовая атака снимает 10 стойкости. Стойкость противников и способностей приведена к единицам <a href="https://honkai-star-rail.fandom.com/wiki/Toughness#Toughness_Reduction_Formula" target="_blank" rel="noopener">HSR Wiki</a>: исходные данные Nanoka делятся на 3. При нулевой стойкости дальнейшего снижения нет.</p>
+      </details>
+    </section>
+    <button class="button" id="next" type="button" disabled>Ход противника →</button>
     <section aria-labelledby="turns-heading">
       <h2 id="turns-heading">Список ходов</h2>
       <p class="description">AV хода отсчитывается от начала боя. Порядок ходов продолжается между циклами.</p>

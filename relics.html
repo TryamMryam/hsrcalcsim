@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Реликвии — HSR Calc Sim</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="relics.js" defer></script>
+  <script src="relic-model.js" defer></script>
+  <script src="relic-library.js" defer></script>
+</head>
+<body class="app-body">
+  <a class="skip-link" href="#main-content">К содержимому</a>
+  <aside class="app-sidebar" aria-label="Меню приложения">
+    <a class="sidebar-brand" href="index.html" aria-label="HSR Calc Sim — главная"><span class="brand-mark" aria-hidden="true">HSR</span><span class="sidebar-brand-text">CALC SIM</span></a>
+    <nav class="sidebar-nav" aria-label="Страницы">
+      <a class="sidebar-link" href="index.html" title="Главная"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10 12 3l9 7M5 9v12h14V9M9 21v-8h6v8"/></svg><span class="sidebar-label">Главная</span></a>
+      <a class="sidebar-link" href="profile.html" title="Профиль"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a8 8 0 0 0-16 0v2M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0"/></svg><span class="sidebar-label">Профиль</span></a>
+      <a class="sidebar-link" href="characters.html" title="Персонажи"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a6 6 0 0 0-12 0v2M14 6a4 4 0 1 1-8 0 4 4 0 0 1 8 0M18 3a4 4 0 0 1 0 8M20 15a6 6 0 0 1 2 4v2"/></svg><span class="sidebar-label">Персонажи</span></a>
+      <a class="sidebar-link" href="relics.html" title="Реликвии" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 9-9 9-9-9 9-9ZM3 12h18M12 3l4 9-4 9-4-9 4-9Z"/></svg><span class="sidebar-label">Реликвии</span></a>
+      <a class="sidebar-link" href="sim.html" title="Симуляция боя"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 3 17 17M14 3h7v7M21 3 3 21M3 14v7h7M3 3v5l5 5M16 16l5 5M14 21l7-7"/></svg><span class="sidebar-label">Симуляция боя</span></a>
+      <a class="sidebar-link" href="lightcones.html" title="Световые конусы"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18H6zM9 7h6M9 11h6M9 15h3"/></svg><span class="sidebar-label">Световые конусы</span></a>
+    </nav>
+  </aside>
+  <main id="main-content" tabindex="-1" class="panel library-panel">
+    <p class="eyebrow">HSR · ИНВЕНТАРЬ</p>
+    <h1>Реликвии</h1>
+    <p class="description">Добавляйте реликвии и планарные украшения в свой инвентарь. Наборы, части и бонусы взяты из <a href="https://hsr.nanoka.cc/relic/124" target="_blank" rel="noopener">Nanoka</a> · 4.6.54. Названия и описания — на английском.</p>
+    <div class="library-layout">
+      <section class="character-list-panel" aria-labelledby="sets-heading">
+        <h2 id="sets-heading">Наборы</h2>
+        <label class="library-search">Поиск набора<input id="relic-search" type="search" placeholder="Название или ID" autocomplete="off"></label>
+        <p id="relic-set-count" class="description" role="status"></p>
+        <div id="relic-set-list" class="library-list" aria-label="Наборы реликвий"></div>
+      </section>
+      <section class="character-detail" aria-labelledby="relic-set-heading">
+        <div class="relic-set-header"><div id="relic-set-image"></div><h2 id="relic-set-heading"></h2></div>
+        <div id="relic-bonuses"></div>
+        <a id="relic-source" class="back" target="_blank" rel="noopener">Карточка набора на Nanoka ↗</a>
+        <form id="relic-form" class="relic-form">
+          <h3>Добавить реликвию</h3>
+          <label>Часть<select id="relic-part" required></select></label>
+          <div id="relic-part-preview" class="relic-part-preview" aria-live="polite"></div>
+          <div class="relic-form-row">
+            <label>Редкость<select id="relic-rarity"><option value="5">5★</option><option value="4">4★</option><option value="3">3★</option></select></label>
+            <label>Уровень<input id="relic-level" type="number" min="0" max="15" step="1" value="15" required></label>
+          </div>
+          <div class="relic-form-row">
+            <label>Основная характеристика<select id="relic-main-stat" required></select></label>
+            <label>Значение<span id="relic-main-unit"></span><input id="relic-main-value" type="number" min="0.001" step="any" placeholder="Введите значение" required></label>
+          </div>
+          <p class="description">Характеристики вводятся вручную с вашей реликвии. Проценты указывайте числом: 32,4 означает 32,4%. Изменение уровня не пересчитывает введённые значения.</p>
+          <fieldset class="relic-substats"><legend>Дополнительные характеристики · до 4</legend><div id="relic-substats"></div></fieldset>
+          <button class="button" id="add-relic" type="submit">Добавить в инвентарь +</button>
+        </form>
+      </section>
+    </div>
+    <p id="relic-status" class="status" role="status"></p>
+    <section aria-labelledby="inventory-heading">
+      <h2 id="inventory-heading">Мои реликвии · <span id="relic-count">0</span></h2>
+      <p class="description">Инвентарь сохраняется в этом браузере. Надеть реликвии на персонажей можно на странице <a href="profile.html">«Профиль»</a>.</p>
+      <div id="relic-inventory" class="relic-inventory"></div>
+    </section>
+  </main>
+</body>
+</html>
