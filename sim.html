@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Симуляция боя — HSR Calc Sim</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="sim.js" defer></script>
+</head>
+<body>
+  <main class="panel">
+    <a class="back" href="index.html">← Главное меню</a>
+    <p class="eyebrow">SIM</p>
+    <h1>Симуляция боя</h1>
+    <p class="description">Одна атака в секунду. Каждый удар снимает 1 HP.</p>
+    <section class="arena" aria-label="Бой двух кругов">
+      <div class="fighter" id="white">
+        <div class="health" role="progressbar" aria-label="Здоровье белого круга" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+          <div class="health-fill"></div>
+          <span class="health-value">100/100</span>
+        </div>
+        <div class="circle white"></div>
+        <span class="fighter-name">Белый круг</span>
+      </div>
+      <div class="fighter" id="red">
+        <div class="health" role="progressbar" aria-label="Здоровье красного круга" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+          <div class="health-fill"></div>
+          <span class="health-value">100/100</span>
+        </div>
+        <div class="circle red"></div>
+        <span class="fighter-name">Красный круг</span>
+      </div>
+    </section>
+    <p class="status" role="status">Бой начинается. Первым атакует белый круг.</p>
+    <button class="button" id="restart" type="button">Начать заново ↻</button>
+  </main>
+</body>
+</html>
